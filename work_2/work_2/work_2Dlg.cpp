@@ -175,8 +175,7 @@ void Cwork_2Dlg::OnBnClickedButton1()
 	CString filename;					//	имя файла полностью
 	CString num;
 	
-	memset(strmass, 0, sizeof(strmass)); // обнуление массива разностей 
-	memset(showgr, 0, sizeof(showgr));   // обнуление флагов
+
   // для потоков чтения
 
 
@@ -191,8 +190,10 @@ void Cwork_2Dlg::OnBnClickedButton1()
 
 	if (num =="_Event.txt"){
 		memset(mass, 0, sizeof(mass));
+		memset(strmass, 0, sizeof(strmass)); // обнуление массива разностей 
+		memset(showgr, 0, sizeof(showgr));   // обнуление флагов
 		Cwork_2Dlg::read_file(txt);
-		MessageBox(L"Все", L"Закончили", MB_OK);
+		//MessageBox(L"Все", L"Закончили", MB_OK);
 		for (int i = 0; i < 256; i++){
 			for(int j = 0; j < 256; j++){
 				strmass[i] += mass[j][i];
