@@ -175,20 +175,22 @@ void Cwork_2Dlg::OnBnClickedButton1()
 	CString filename;					//	имя файла полностью
 	CString num;
 	
-	memset(strmass, 0, sizeof(strmass));
-	memset(showgr, 0, sizeof(showgr));
+	memset(strmass, 0, sizeof(strmass)); // обнуление массива разностей 
+	memset(showgr, 0, sizeof(showgr));   // обнуление флагов
   // для потоков чтения
 
 
-  CString sFilter = L"TXT файлы (*.txt)|*.txt|Любые файлы (*.*)|*.*||";
+	CString sFilter = L"TXT файлы (*.txt)|*.txt|Любые файлы (*.*)|*.*||";
 	CFileDialog dlgOpen(TRUE, 0, 0, OFN_HIDEREADONLY | OFN_FILEMUSTEXIST, (LPCTSTR) sFilter, this); // создадим диалоговое окно
 	if(IDCANCEL == dlgOpen.DoModal())
-		return;							// пользователь отказался от выбора
+	return;							// пользователь отказался от выбора
 	txt = dlgOpen.GetPathName();		//получаем путь к файлу
 	filename = dlgOpen.GetFileName();
 	num = filename;
 	num.Delete(0,1);
+
 	if (num =="_Event.txt"){
+		memset(mass, 0, sizeof(mass));
 		Cwork_2Dlg::read_file(txt);
 		MessageBox(L"Все", L"Закончили", MB_OK);
 		for (int i = 0; i < 256; i++){

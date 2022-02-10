@@ -26,10 +26,14 @@ public:
 
 	int* ppmass[4];	//массив укзателей на массивы графиков
 
-	//1- int *data;		// данные для обычного графика
-	//2- int *pdmass;	// данные для диф граффика
-	//3-int *pamass;	// данне графика второй проиводной
-	//4 - данные для подчеркивания  
+	// 0 - int *data;		// данные для обычного графика
+	// 1 - int *pdmass;	// данные для диф граффика
+	// 2 - int *pamass;	// данне графика второй проиводной
+	// 3 - данные для подчеркивания (не знаю работает или нет)
+
+	//////////////////
+
+
 	//int strmulti [3][236];	 // составляющие обычный граффик
 	int liner[2][2];
 
@@ -42,7 +46,7 @@ public:
 
 	int numColor;
 	int leng[3][2];
-	int* flgraph;
+	int* flgraph;	//
 
 	// мои ручки //
 	CPen* penal[4]; 
@@ -63,8 +67,7 @@ public:
 
 	void GradientFillRect(HDC pDC);
 	void setIN(int, int, int*, int, CwinGrad*);
-	// принимает занчения для обычного графика
-	void setIN(int,int* showgr ,int* mass , int* strmass1, int* strmass2, int* strmass3);
+
 	 COLORREF getColor(int);
 
 
@@ -72,6 +75,9 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnPaint();
+
+	// принимает занчения для обычного графика
+	void setIN(int,int* showgr ,int* mass , int* strmass1, int* strmass2, int* strmass3);
 
 	// принимает занчения для граффика второй проивзодной
 	void set_ain(int* mass);

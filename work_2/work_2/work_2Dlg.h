@@ -29,7 +29,17 @@ public:
 	int strmass1[236];
 	int strmass2[236];
 	int strmass3[236];
+
+	// флаги для определения что показывать 
+
 	int showgr[4];
+	// 0 - основной граффик
+	// 1 - дифференциальный граффик 
+	// 2 - вторая производная
+	// 3 - показать начало и конец участка спада
+
+	////////
+
 
 	// оценка графика
 	int thik;
@@ -60,8 +70,10 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnBnClickedButton1();
+
 	// читает файл
 	void read_file(CString txt);
+
 	// преводит файл в массив
 	void parth(string a, int n);
 

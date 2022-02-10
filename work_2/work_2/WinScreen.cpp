@@ -88,12 +88,19 @@ void CWinScreen::OnPaint()
 }
 
 // принимает занчения для обычного графика
-void CWinScreen::setIN(int colms,int* showgr, int *dt, int* strmass1, int* strmass2, int* strmass3)
+void CWinScreen::setIN(int colms, int* showgr, int *dt, int* strmass1, int* strmass2, int* strmass3)
 {
 	ppmass[0] = dt;
-	max = ppmass[0][0];
-	flgraph = showgr;
+	flgraph = showgr; // передаем флаги что показывать
 
+	// поиск максимального значения 
+	max = ppmass[0][0];
+	for(int i = 1; i < 256; i++){
+		if(max < ppmass[0][i]){
+			max = ppmass[0][i];
+	  }
+	}
+	pmaxmass[0] = max;
 	//for(int j = 0; j < 236; j++){
 	//	strmulti[0][j] = strmass1 [j];
 	//}
@@ -103,13 +110,9 @@ void CWinScreen::setIN(int colms,int* showgr, int *dt, int* strmass1, int* strma
 	//for(int j = 0; j < 236; j++){
 	//	strmulti[2][j] = strmass3 [j];
 	//}
+	
 
-	for(int i = 1; i < 256; i++){
-		if(max < ppmass[0][i]){
-		max = ppmass[0][i];
-	  }
-	}
-	pmaxmass[0] = max;
+
  //CWinScreen::GraphPloting(0x000000);
 
 	Invalidate();
