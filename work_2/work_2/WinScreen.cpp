@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "work_2.h"
 #include "WinScreen.h"
+#include <math.h>
 
 
 // CWinScreen
@@ -17,23 +18,27 @@ CWinScreen::CWinScreen()
 	ppmass[2] = nullptr;
 	ppmass[3] = nullptr;
 
-	//data = nullptr;
-	//pdmass = nullptr;
-	//pamass = nullptr;
-
 	pen1.CreatePen(PS_SOLID, 1 ,0x1EEB70);
 	pen2.CreatePen(PS_SOLID, 1, 0x3333FF);
 	pen3.CreatePen(PS_SOLID, 1, 0xD011D7);
 	pen4.CreatePen(PS_SOLID, 1, 0x0931CE);
 
-	//pmaxmass[0] = &max;
-	//pmaxmass[1] = &dmax;
-	//pmaxmass[2] = &amax;
-
 	penal[0] = &pen1;
 	penal[1] = &pen2;
 	penal[2] = &pen3;
 	penal[3] = &pen4;
+
+	begin_graph = 80;	
+	end_graph = 140;		
+
+	//data = nullptr;
+	//pdmass = nullptr;
+	//pamass = nullptr;
+
+
+	//pmaxmass[0] = &max;
+	//pmaxmass[1] = &dmax;
+	//pmaxmass[2] = &amax;
 }
 
 CWinScreen::~CWinScreen()
@@ -47,6 +52,8 @@ CWinScreen::~CWinScreen()
 
 BEGIN_MESSAGE_MAP(CWinScreen, CStatic)
 	ON_WM_PAINT()
+//	ON_WM_MOUSEHWHEEL()
+ON_WM_MOUSEWHEEL()
 END_MESSAGE_MAP()
 
 
@@ -67,7 +74,7 @@ void CWinScreen::OnPaint()
 		standartfiller();
 		for(int i = 0; i < 3; i++){
 			if(flgraph[i] == 1){
-				plot(80, 140, pmaxmass[i], ppmass[i], i);
+				plot(begin_graph, end_graph, pmaxmass[i], ppmass[i], i);
 			}
 		}
 		for(int i = 3; i < 4;i++){
@@ -101,19 +108,6 @@ void CWinScreen::setIN(int colms, int* showgr, int *dt, int* strmass1, int* strm
 	  }
 	}
 	pmaxmass[0] = max;
-	//for(int j = 0; j < 236; j++){
-	//	strmulti[0][j] = strmass1 [j];
-	//}
-	//for(int j = 0; j < 236; j++){
-	//	strmulti[1][j] = strmass2 [j];
-	//}
-	//for(int j = 0; j < 236; j++){
-	//	strmulti[2][j] = strmass3 [j];
-	//}
-	
-
-
- //CWinScreen::GraphPloting(0x000000);
 
 	Invalidate();
   
@@ -126,7 +120,6 @@ void CWinScreen::setin_dif(int dx, int* dmass )
 	maxp = dx;
 	dmax =abs(dmass[maxp]);
 	pmaxmass[1] = dmax;
-	//DGraphPloting(0x000000);
 	Invalidate();
 }
 
@@ -143,7 +136,6 @@ void CWinScreen::set_ain(int *amass)
  
 	amax = buf;
 	pmaxmass[2] = amax;
-	//Plot_agraph();
 	Invalidate();
 }
 
@@ -172,11 +164,17 @@ COLORREF CWinScreen::getColor(int temp){
 // универсальный рисователь графиков (без осей и фона )
 void CWinScreen::plot(int beg, int end, int max, int* mass ,int init)
 {
+	// beg  - индекс первого элемента для отрисовки
+	// end  - индекс последнего элемента для отрисовки
+	// max  - наибольшее значение
+	// mass - значения
+	// init - для выбора цвета ручки
+
 	CDC* pdc = GetDC();
 	CRect rect;
-	GetClientRect(rect);// получаем размер области рисования
+	GetClientRect(rect);	// получаем размер области рисования
 	if (rect.IsRectEmpty()) 
-		return;            //если квадрат пустой то выйти	
+		return;				//если квадрат пустой то выйти	
 	if (ppmass == nullptr){
 		ReleaseDC(pdc);
 		return; 
@@ -199,8 +197,8 @@ void CWinScreen::plot(int beg, int end, int max, int* mass ,int init)
 	}
 
 
-	int mash =len / ( end - beg);
-	int cdel = max/ height ;
+	int mash =len / ( end - beg);	// установка маштаба горизонтальной оси
+	int cdel = max/ height ;		// установка маштаба вертикальной оси
 	pdc->MoveTo(zero[0], zero[1]);
 
 	for(int i = 0 ,fl = beg ; i < end; i++, fl++){
@@ -241,7 +239,7 @@ void CWinScreen::standartfiller(void)
 	if(ppmass[0] == nullptr){
 		return;
 	}
-
+	// проверка флагов графиков производных
 	for(int i = 1 ; i < 3; i++){
 		if(flgraph[i] == 1){
 			buf = 1;
@@ -372,300 +370,88 @@ void CWinScreen::underliter(int * begend)
 	ReleaseDC(pdc);
 }
 
+ // обработка прокуртки колесика мыши 
+BOOL CWinScreen::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt) 
+{	
+	// UINT nFlags  - хз какие-то приколы 
+	// short zDelta - показывает на сколько сколько делений было повернуто колесо из  (+ вправо, - влево)
+	// CPoint pt    - координта в которой произошла прокрутка
+	
+	if(ppmass[0] == nullptr){
+		return CButton::OnMouseWheel(nFlags, zDelta, pt);
+	}
+	
+	// переводим в клиентские координаты
+	CPoint mypt = pt;
+	ScreenToClient(&mypt);
 
+	// курсор за переделами графика
 
-//CWinScreen::setIN(int xx, int yy, int *dt, int max, CwinGrad* gr)
-//{
-//  x = xx;
-//  y = yy;
-//  data = dt;
-//
-//  numColor =  max + 1;
-//  StartColor = RGB(255,255,255); // белый
-//  EndColor = RGB(0, 0, 0);
-//
-//  //начальные состовляющие цвета
-//  StartRGB[0] = GetRValue(StartColor);
-//  StartRGB[1] = GetGValue(StartColor);
-//  StartRGB[2] = GetBValue(StartColor);
-//  //шаг изменения цвета
-//  RGBDelta[0] = abs(GetRValue(StartColor) - GetRValue(EndColor));
-//  RGBDelta[1] = abs(GetGValue(StartColor) - GetGValue(EndColor));
-//  RGBDelta[2] = abs(GetBValue(StartColor) - GetBValue(EndColor));
-//
-//
-//
-//  statGrad = gr;
-//  //gr->Invalidate();
-//
-//}
-//void CWinScreen::GradientFillRect(HDC pDC)
-//{
-// HBRUSH Brush;
-// CRect ColorBand;
-// COLORREF StartColor = RGB(220, 220, 220);
-// CRect rect;	  
-//
-//  GetClientRect(rect); // получаем размер области рисования
-//  if (rect.IsRectEmpty()) 
-//    return;            //если квадрат пустой то выйти
-//
-//  //закрасим поле
-//  ColorBand = rect;
-//  Brush = CreateHatchBrush(HS_DIAGCROSS, StartColor);
-//  FillRect(pDC, ColorBand, Brush);
-//  DeleteObject(Brush);
-//
-//  if(x==0 || y==0)
-//    return;
-//  sz; // размер квадратика
-//  int i = rect.Width()/x;
-//  int j = rect.Height()/y;
-//  sz = i;
-//  if(j < i)
-//    sz = j;
-//  // отступ слева
-//  margX = (rect.Width() - x*sz)/2;
-//  margY = (rect.Height() - y*sz)/2;
-//
-//  // рисуем квадратики 
-//  for(i=0; i<x; i++){
-//    for(j=0; j<y; j++){
-//      
-//      Brush = CreateSolidBrush(getColor(*(data+j*x+i)));
-//      ColorBand.top = margY + j*sz;
-//      ColorBand.bottom = margY + (j+1)*sz;
-//      ColorBand.left = margX + i*sz;
-//      ColorBand.right = margX + (i+1)*sz;
-//      FillRect(pDC, ColorBand, Brush);
-//      DeleteObject(Brush);
-//	  }
-//  }
-//}
+	if(mypt.x > pointx[2]){
+		return CButton::OnMouseWheel(nFlags, zDelta, pt); 
+	}
+	else if(mypt.x < pointx[0]){
+		return CButton::OnMouseWheel(nFlags, zDelta, pt);
+	}
 
-//// построение граффика обычного
-//void CWinScreen::GraphPloting(COLORREF GraphColor)
-//{
-//	CDC* pdc = GetDC();
-//	CPen Mpen;
-//	CRect ColorBand;
-//	CRect rect;	
-//	GetClientRect(rect);// получаем размер области рисования
-//	ColorBand = rect;
-//
-//	
-//	// зарисовываем фон белым // 
-//	CBrush Brush;
-//	COLORREF StartColor = RGB(255, 255, 255);
-//
-//	if (rect.IsRectEmpty()) 
-//	return;            //если квадрат пустой то выйти
-//
-//	//закрасим поле
-//	ColorBand = rect;
-//
-//	Brush.CreateSolidBrush(StartColor);
-//	//CBrush *poldbrush = pdc->SelectObject(&Brush);
-//	pdc->FillRect(ColorBand, &Brush);
-//	//pdc->SelectObject(poldbrush);
-//	Brush.DeleteObject();
-//
-//
-//
-//	// коридинаты точек осей
-//	
-//	pointx[0] = ((rect.right) / 8);
-//	pointx[1] = ((rect.right) / 8);
-//	pointx[2] = ((rect.right) - (rect.right) / 16) ;
-//
-//
-//	pointy[0] = (rect.bottom  / 8);
-//	pointy[1] = rect.bottom - (rect.bottom  / 8);
-//	pointy[2] = rect.bottom - (rect.bottom  / 8);
-//
-//	Mpen.CreatePen(PS_SOLID, 1, GraphColor);
-//	CPen *poldpen = pdc->SelectObject(&Mpen);
-//	// рисуем оси
-//	pdc->MoveTo(pointx[0], pointy[0]);
-//	 for(int i = 1;i < 3;i ++){
-//		 pdc->LineTo(pointx[i],pointy[i]);	
-//	 }
-//
-//	if (data == nullptr){
-//		pdc->SelectObject(poldpen);
-//		Mpen.DeleteObject();
-//		ReleaseDC(pdc);
-//		return; 
-//	}
-//	int len = pointy[1] -pointy[0]; 
-//	int cdel =max/len;
-//
-//	pdc->MoveTo(pointx[1], pointy[1]);
-//	for(int i = 0 ,fl = 80 ; i < 96; i++, fl++){
-//		 pdc->LineTo(pointx[1]+(10*i),pointy[1] - (data[fl] / cdel));
-//	}
-//
-//	
-//	for(int i = 0; i < 3; i++){
-//		pdc->MoveTo(pointx[1], pointy[1]);
-//		pdc->SelectObject(penal[i]);
-//		int cof = i + 1;
-//		for(int j = 0 ,fl = 80; j < 96 ; j++, fl++){
-//			pdc->LineTo(pointx[1]+(10*j), pointy[1] - (strmulti[i][fl] / cdel));
-//		}
-//	}
-//
-//
-//
-//
-//	pdc->SelectObject(Mpen);
-//	pdc->SelectObject(poldpen);
-//	Mpen.DeleteObject();
-//	ReleaseDC(pdc);
-//
-//}
+	//находим значение индекса массива соответвующее положению курсора
+	int x_in_mass = begin_graph + ( ( (mypt.x - pointx[0]) * (end_graph - begin_graph) ) / (pointx[2] - pointx[0]) );	
+	
+	int mash = 10; // цена деления еденицы прокрутки
 
-//// построение дифференциального графика
-/*void CWinScreen::DGraphPloting(COLORREF GraphColor)
-//{
-//	CDC* pdc = GetDC();
-//	CPen Mpen;
-//	CRect ColorBand;
-//	CRect rect;	
-//	GetClientRect(rect);// получаем размер области рисования
-//	ColorBand = rect;
-//	
-//	// зарисовываем фон белым // 
-//	CBrush Brush;
-//	COLORREF StartColor = RGB(255, 255, 255);
-//
-//	if (rect.IsRectEmpty()) 
-//		return;            //если квадрат пустой то выйти
-//
-//	//закрасим поле
-//	ColorBand = rect;
-//
-//	Brush.CreateSolidBrush(StartColor);
-//	pdc->FillRect(ColorBand, &Brush);
-//	Brush.DeleteObject();
-//
-//
-//	// координаты точек осей с отриц 
-//	
-//	pointx[0] = ((rect.right) / 8);
-//	pointx[1] = ((rect.right) / 8);
-//	pointx[2] = ((rect.right) / 8);
-//	pointx[3] = ((rect.right) - (rect.right) / 16) ;
-//
-//
-//	pointy[0] = (rect.bottom  / 8);
-//	pointy[1] = rect.bottom - (rect.bottom  / 8);
-//	pointy[2] = (rect.bottom  / 8) + (rect.bottom - (rect.bottom  / 8) - (rect.bottom  / 8)) / 2;
-//	pointy[3] = (rect.bottom  / 8) + (rect.bottom - (rect.bottom  / 8) - (rect.bottom  / 8)) / 2;
-//
-//
-//	Mpen.CreatePen(PS_SOLID, 1, GraphColor);
-//	CPen *poldpen = pdc->SelectObject(&Mpen);
-//	// рисуем оси
-//	pdc->MoveTo(pointx[0], pointy[0]);
-//	for(int i = 0; i < 4; i++){
-//		pdc->LineTo(pointx[i], pointy[i]);
-//	}
-//
-//	if (pdmass == nullptr){
-//		pdc->SelectObject(poldpen);
-//		Mpen.DeleteObject();
-//		ReleaseDC(pdc);
-//		return; 
-//	}
-//	// построение диф граффика // 
-//	int len = (pointy[1] - pointy[0]) / 2;
-//	int cdel = dmax / len;
-//	pdc->MoveTo(pointx[2], pointy[2]);
-//	for(int i = 0 ,fl = 100 ; i < 85; i++, fl++){
-//		if(pdmass > 0){
-//			pdc->LineTo(pointx[1]+(10 * i), pointy[2] - (pdmass[fl] / cdel));
-//		}
-//		else{
-//			pdc->LineTo(pointx[1]+(10 * i), pointy[2] + (pdmass[fl] / cdel));
-//		}
-//	}
-//
-//	pdc->SelectObject(Mpen);
-//	pdc->SelectObject(poldpen);
-//	Mpen.DeleteObject();
-//	ReleaseDC(pdc);
-//
-//}
-//
-//// график второй производной
-//void CWinScreen::Plot_agraph(void)
-//{
-//
-//	CDC* pdc = GetDC();
-//	CRect ColorBand;
-//	CRect rect;	
-//	GetClientRect(rect);// получаем размер области рисования
-//	ColorBand = rect;
-//	
-//	// зарисовываем фон белым // 
-//	CBrush Brush;
-//	COLORREF StartColor = RGB(255, 255, 255);
-//
-//	if (rect.IsRectEmpty()) 
-//		return;            //если квадрат пустой то выйти
-//
-//	//закрасим поле
-//	ColorBand = rect;
-//
-//	Brush.CreateSolidBrush(StartColor);
-//	pdc->FillRect(ColorBand, &Brush);
-//	Brush.DeleteObject();
-//
-//
-//	// координаты точек осей с отриц 
-//	
-//	pointx[0] = ((rect.right) / 8);
-//	pointx[1] = ((rect.right) / 8);
-//	pointx[2] = ((rect.right) / 8);
-//	pointx[3] = ((rect.right) - (rect.right) / 16) ;
-//
-//	
-//	pointy[0] = (rect.bottom  / 8);
-//	pointy[1] = rect.bottom - (rect.bottom  / 8);
-//	pointy[2] = (rect.bottom  / 8) + (rect.bottom - (rect.bottom  / 8) - (rect.bottom  / 8)) / 2;
-//	pointy[3] = (rect.bottom  / 8) + (rect.bottom - (rect.bottom  / 8) - (rect.bottom  / 8)) / 2;
-//
-//
-//	CPen *poldpen = pdc->SelectObject(penal[0]);
-//	
-//	// рисуем оси
-//	pdc->MoveTo(pointx[0], pointy[0]);
-//	for(int i = 0; i < 4; i++){
-//		pdc->LineTo(pointx[i], pointy[i]);
-//	}
-//
-//	if (pamass == nullptr){
-//		pdc->SelectObject(poldpen);
-//		ReleaseDC(pdc);
-//		return; 
-//	}
-//	// построение граффика второй проиводной // 
-//	int len = (pointy[1] - pointy[0]) / 2;
-//	int cdel = amax / len;
-//	pdc->MoveTo(pointx[2], pointy[2]);
-//	for(int i = 0 ,fl = 100 ; i < 85; i++, fl++){
-//		if(pdmass > 0){
-//			pdc->LineTo(pointx[1]+(10 * i), pointy[2] - (pamass[fl] / cdel));
-//		}
-//		else{
-//			pdc->LineTo(pointx[1]+(10 * i), pointy[2] + (pamass[fl] / cdel));
-//		}
-//	}
-//
-//	pdc->SelectObject(poldpen);
-//	ReleaseDC(pdc);
-//
-}*/
+	// если курcор находиться в сереедине графика маштабирование просиходит за счет сближения двух границ (end_graph , begin_graph)
+	// в противном случае сближается самая удаленная граница 
 
+	if(zDelta > 0){
 
+		if((end_graph - begin_graph) <= 10){
+			return CButton::OnMouseWheel(nFlags, zDelta, pt);
+		}
+
+		if((x_in_mass - begin_graph) > (end_graph - x_in_mass)){
+			begin_graph = begin_graph + mash;
+		}
+		else if ((x_in_mass - begin_graph) < (end_graph- x_in_mass)) {
+			end_graph = end_graph - mash;
+	
+		}
+		else{
+			begin_graph = begin_graph + mash;
+			end_graph = end_graph - mash;
+		} 
+		
+	}
+	else{
+		
+		if((end_graph - begin_graph) >= 60){
+			return CButton::OnMouseWheel(nFlags, zDelta, pt);
+		}
+
+		if((x_in_mass - begin_graph) > (end_graph- x_in_mass)){
+			//begin_graph = begin_graph - mash;
+			end_graph = end_graph + mash;
+		}
+		else if ((x_in_mass - begin_graph) < (end_graph- x_in_mass)) {
+			//end_graph = end_graph + mash;
+			begin_graph = begin_graph - mash;
+	
+		}
+		else{
+			begin_graph = begin_graph - mash;
+			end_graph = end_graph + mash;
+		}
+	}
+
+	Invalidate();
+	return CButton::OnMouseWheel(nFlags, zDelta, pt);
+
+}
+
+// возращения шрафика в первоночальное сост
+void CWinScreen::un_zoom()
+{
+	begin_graph = 80;	
+	end_graph = 140;
+
+	Invalidate();
+}

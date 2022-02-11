@@ -77,6 +77,7 @@ public:
 	// преводит файл в массив
 	void parth(string a, int n);
 
+	//CButton m_screen;
 	CWinScreen m_screen;   // окно картинки
     CwinGrad m_poleGrad;
 	afx_msg void OnBnClickedButton3();
@@ -101,4 +102,5 @@ public:
 	int findmax(int* mass);
 	// ищем плохой массив
 	int detach(void);
+	afx_msg void OnBnClickedButton6();
 };

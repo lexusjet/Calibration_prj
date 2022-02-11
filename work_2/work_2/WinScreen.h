@@ -3,7 +3,7 @@
 #include "CwinGrad.h"
 // CWinScreen
 
-class CWinScreen : public CStatic
+class CWinScreen : public CButton
 {
 	DECLARE_DYNAMIC(CWinScreen)
 
@@ -27,13 +27,15 @@ public:
 	int* ppmass[4];	//массив укзателей на массивы графиков
 
 	// 0 - int *data;		// данные дл€ обычного графика
-	// 1 - int *pdmass;	// данные дл€ диф граффика
-	// 2 - int *pamass;	// данне графика второй проиводной
+	// 1 - int *pdmass;		// данные дл€ диф граффика
+	// 2 - int *pamass;		// данне графика второй проиводной
 	// 3 - данные дл€ подчеркивани€ (не знаю работает или нет)
 
 	//////////////////
 
-
+	int begin_graph;	// индекс первого элемента дл€ отрисовки
+	int end_graph;		// индекс последнего элемента дл€ отрисовки
+	
 	//int strmulti [3][236];	 // составл€ющие обычный граффик
 	int liner[2][2];
 
@@ -46,7 +48,8 @@ public:
 
 	int numColor;
 	int leng[3][2];
-	int* flgraph;	//
+
+	int* flgraph;	// флаги что показывать
 
 	// мои ручки //
 	CPen* penal[4]; 
@@ -54,6 +57,7 @@ public:
 	CPen pen2;
 	CPen pen3;
 	CPen pen4;
+
 	// точки дл€ построени€ оси координат //
 	int pointx[4];
 	int pointy[4];
@@ -93,12 +97,16 @@ public:
 	
 	// рисователь фона с осью
 	void standartfiller(void);
-	
+
+	// возращени€ графика в первоночальное сост
+	void un_zoom();
 	
 	
 
 	// подчеркиваем нужное 
 	void underliter(int * begend);
+//	afx_msg void OnMouseHWheel(UINT nFlags, short zDelta, CPoint pt);
+	afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
 };
 
 

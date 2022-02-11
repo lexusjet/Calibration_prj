@@ -28,6 +28,8 @@ public:
 // Реализация
 protected:
 	DECLARE_MESSAGE_MAP()
+public:
+//	afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
 };
 
 CAboutDlg::CAboutDlg() : CDialogEx(CAboutDlg::IDD)
@@ -40,6 +42,7 @@ void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
+//	ON_WM_MOUSEWHEEL()
 END_MESSAGE_MAP()
 
 
@@ -62,9 +65,9 @@ maxPok=0;
 
 void Cwork_2Dlg::DoDataExchange(CDataExchange* pDX)
 {
-  CDialogEx::DoDataExchange(pDX);
-  DDX_Control(pDX, IDC_STATIC1, m_screen);
-  DDX_Control(pDX, IDC_STATIC2, m_poleGrad);
+	CDialogEx::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_STATIC2, m_poleGrad);
+	DDX_Control(pDX, IDC_BUTTON5, m_screen);
 }
 
 BEGIN_MESSAGE_MAP(Cwork_2Dlg, CDialogEx)
@@ -76,6 +79,7 @@ BEGIN_MESSAGE_MAP(Cwork_2Dlg, CDialogEx)
   ON_BN_CLICKED(IDC_BUTTON2, &Cwork_2Dlg::OnBnClickedButton2)
   ON_BN_CLICKED(IDOK, &Cwork_2Dlg::OnBnClickedOk)
   ON_BN_CLICKED(IDC_BUTTON4, &Cwork_2Dlg::OnBnClickedButton4)
+  ON_BN_CLICKED(IDC_BUTTON6, &Cwork_2Dlg::OnBnClickedButton6)
 END_MESSAGE_MAP()
 
 
@@ -709,4 +713,18 @@ int Cwork_2Dlg::detach(void)
 	//m_screen.set_mline(cord, cord);
 	return(len);
 	
+}
+
+
+//BOOL CAboutDlg::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
+//{
+//	// TODO: добавьте свой код обработчика сообщений или вызов стандартного
+//
+//	return CDialogEx::OnMouseWheel(nFlags, zDelta, pt);
+//}
+
+
+void Cwork_2Dlg::OnBnClickedButton6()
+{
+	m_screen.un_zoom();
 }
