@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32126.317
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "plt_spectr", "plt_spectr\plt_spectr.pyproj", "{B935855B-5EFB-4398-9CA2-BA2909FD6CB1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B935855B-5EFB-4398-9CA2-BA2909FD6CB1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B935855B-5EFB-4398-9CA2-BA2909FD6CB1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {AA77878C-411D-401B-8315-C29EA89E05F6}
+	EndGlobalSection
+EndGlobal
