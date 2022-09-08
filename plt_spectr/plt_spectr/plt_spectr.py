@@ -304,7 +304,10 @@ def idea_4_invert(arr=[]):
 
 # тело прграммы  нужно переписать на мейн
 
-path = 'D:/teast_dir/'
+#path = 'D:/teast_dir/'
+
+path =  'D:/work(DLNP)/Calibration_prj/teast_dir/'
+
 if(0):
     for i in range(0,30):
    
